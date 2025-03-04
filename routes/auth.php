@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -14,8 +16,21 @@ Route::middleware("guest")->group(
         Route::get(
             "google/auth",
             function () {
-                $user = Socialite::driver("google")->user();
-                // dd($user->getName());
+                $googleUser = Socialite::driver("google")->user();
+
+                $user = new User;
+                $user->name = $googleUser->name;
+                $user->email = $googleUser->email;
+                $user->google_id = $googleUser->id;
+                $user->google_access_token = $googleUser->token;
+                $user->google_refresh_token = $googleUser->refreshToken;
+                $user->google_expires_in = $googleUser->expiresIn;
+                $user->google_avatar_url = $googleUser->avatar;
+
+                $user->save();
+                Auth::login($user);
+
+                return redirect("/vote");
             }
         );
     }

@@ -10,8 +10,8 @@ Route::get(
     }
 )->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
+Route::view('vote', 'dashboard')
+    ->middleware(['auth'])
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(
